@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>kadai5_Cancas</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <style>
+        canvas {
+            border: 3px dashed pink;
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <h1>課題5</h1>
+        <nav>
+            <input type="color" id="color">
+            <input type="range" id="range" min="0" max="100">
+            <button id="clear_btn">CLEAR</button>
+        </nav>
+        <canvas id="drowarea" width="500" height="500"></canvas>
+    </section>
+
+</body>
+<script>
+    //初期化
+    let canvas_mouse_event = false;
+    let oldX = 0;
+    let oldY = 0;
+    let bold_line = 5;
+    let color = "#000";
+
+    //必要最低限の2行
+    const can = $("#drowarea")[0];
+    const ctx = can.getContext("2d");
+
+    //mousedown
+    $(can).on("mousedown", function (e) {
+        oldX = e.offsetX;
+        oldY = e.offsetY;
+        canvas_mouse_event = true;
+    });
+
+    //mousemove/フラグがtrueだったら描く
+    $(can).on("mousemove", function (e) {
+        if (canvas_mouse_event == true) {
+            const px = e.offsetX;
+            const py = e.offsetY;
+            ctx.strokeStyle = color;
+            ctx.lineWidth = bold_line;
+
+            ctx.beginPath();
+            ctx.lineJoin = "round";
+            ctx.lineCap = "round";
+            ctx.moveTo(oldX, oldY);
+            ctx.lineTo(px, py);
+            ctx.stroke();
+            oldX = px;
+            oldY = py;
+        }
+    })
+
+    //mouseup
+    $(can).on("mouseup", function () {
+        canvas_mouse_event = false;
+    });
+
+    //clear
+    $("#clear_btn").on("mouseup", function () {
+        ctx.beginPath();
+        ctx.clearRect(0, 0, can.width, can.height);
+    });
+
+    //mouseが外に出たら描写をストップ
+    $(can).on("mouseout", function () {
+        canvas_mouse_event = false;
+    });
+
+    //line color
+    $("#color").on("change", function () {
+        var newcolor = $(this).val();
+        console.log(newcolor)
+        color = newcolor
+    });
+
+    //line width
+    $("#range").on("change", function () {
+        var newbold_line = $(this).val();
+        bold_line = newbold_line
+    });
+
+
+
+//
+</script>
+
+</html>
